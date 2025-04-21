@@ -66,9 +66,7 @@ public class UserServiceImp implements UserService{
 
     @Override
     public void logout(String tokenValue) {
-        System.out.println("Looking for token: " + tokenValue);
         Optional<Token> optionalToken = tokenRepository.findByValue(tokenValue);
-        System.out.println("TOKEN"+ optionalToken);
         if(optionalToken.isEmpty()){
             throw  new RuntimeException("Token invalid.");
         }
