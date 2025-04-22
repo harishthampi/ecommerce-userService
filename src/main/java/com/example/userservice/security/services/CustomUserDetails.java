@@ -1,14 +1,16 @@
 package com.example.userservice.security.services;
 
+import com.example.userservice.models.Role;
 import com.example.userservice.models.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@Component
+
 public class CustomUserDetails implements UserDetails {
     private String password;
     private String username;
@@ -17,42 +19,52 @@ public class CustomUserDetails implements UserDetails {
 
     private boolean credentialsNonExpired;
     private boolean enabled;
-    private List
+    private List<GrantedAuthority> authorities;
     public CustomUserDetails(User user){
-        this.user = user;
+
+        this.username = user.getEmail();
+        this.password = user.getPassword();
+        this.accountNonExpired = true;
+        this.accountNonLocked = true;
+        this.credentialsNonExpired = true;
+        this.enabled = true;
+        this.authorities = new ArrayList<>();
+        for(Role role : user.getRoles()){
+            authorities.add(new CustomGrantedAuthority(role));
+        }
     }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return authorities;
     }
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return username;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
+        return accountNonExpired;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
+        return accountNonLocked;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
+        return credentialsNonExpired;
     }
 
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return enabled;
     }
 }
